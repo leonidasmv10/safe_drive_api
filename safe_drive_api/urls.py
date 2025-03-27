@@ -19,4 +19,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('user/', include('api.urls')),
+    path("add_user/", views.add_user, name="add_user"),
+    
 ]
