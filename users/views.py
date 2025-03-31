@@ -14,10 +14,11 @@ class TestView(APIView):
 
 class RegisterAPIView(APIView):
     def post(self, request):
+        print("Datos recibidos:", request.data)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            
+            print("Usuario registrado:", user)
             # Generar tokens JWT
             refresh = RefreshToken.for_user(user)
             
