@@ -163,3 +163,10 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "safe_drive_recover@gmail.com"
+EMAIL_HOST_PASSWORD = "safe_drive_recover"
+
