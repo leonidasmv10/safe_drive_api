@@ -94,52 +94,46 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 
-class RequestPasswordResetAPIView(APIView):
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
+
+class PasswordResetRequestView(APIView):
     def post(self, request):
+        email = request.data.get('email')
+        print(email)
+        print(User.objects.values_list('email', flat=True))
+        user = get_object_or_404(User, email=email)
+        print(user.pk)
         
-        email = request.data.get("email")
-        print("Email:", email)
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({"error": "No existe un usuario con este correo"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Generar un token seguro
-        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-
-        # Construir el enlace de restablecimiento de contraseña
-        reset_url = f"http://localhost:5173/reset-password/{uidb64}/{token}"
-
-        # Enviar el correo
+        reset_link = f"http://127.0.0.1:8000/reset-password/{user.pk}/{token}"
+        print(reset_link)
+        
         send_mail(
-            "Recuperación de contraseña",
-            f"Haz clic en el siguiente enlace para restablecer tu contraseña: {reset_url}",
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
+            subject="Restablecer tu contraseña",
+            message=f"Haz clic en el enlace para cambiar tu contraseña: {reset_link}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email]
         )
 
-        return Response({"message": "Correo de recuperación enviado"}, status=status.HTTP_200_OK)
+        return Response({"message": "Correo enviado"}, status=status.HTTP_200_OK)
+
     
-class ResetPasswordAPIView(APIView):
-    def post(self, request, uidb64, token):
-        try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
-        except (User.DoesNotExist, ValueError, TypeError):
-            return Response({"error": "Enlace inválido o expirado"}, status=status.HTTP_400_BAD_REQUEST)
+class PasswordResetConfirmView(APIView):
+    def post(self, request,uidb64, token):
+        user = get_object_or_404(User, pk=uidb64)
 
-        # Validar el token
         if not default_token_generator.check_token(user, token):
-            return Response({"error": "Token inválido o expirado"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Obtener nueva contraseña
-        new_password = request.data.get("new_password")
-        if not new_password:
-            return Response({"error": "La nueva contraseña es requerida"}, status=status.HTTP_400_BAD_REQUEST)
-
+        new_password = request.data.get('password')
         user.set_password(new_password)
         user.save()
 
-        return Response({"message": "Contraseña actualizada correctamente"}, status=status.HTTP_200_OK)
+        return Response({"message": "Contraseña cambiada exitosamente"}, status=status.HTTP_200_OK)
