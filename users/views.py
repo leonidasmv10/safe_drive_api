@@ -83,17 +83,8 @@ class ChangePasswordView(APIView):
             return Response({'message': 'Contraseña actualizada correctamente'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-from django.contrib.auth.models import User
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.urls import reverse
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -112,7 +103,7 @@ class PasswordResetRequestView(APIView):
         print(user.pk)
         
         token = default_token_generator.make_token(user)
-        reset_link = f"http://127.0.0.1:8000/reset-password/{user.pk}/{token}"
+        reset_link = f"http://localhost:5173/reset-password/{user.pk}/{token}"
         print(reset_link)
         
         send_mail(
@@ -126,14 +117,31 @@ class PasswordResetRequestView(APIView):
 
     
 class PasswordResetConfirmView(APIView):
-    def post(self, request,uidb64, token):
-        user = get_object_or_404(User, pk=uidb64)
+    def post(self, request, uidb64, token):
+        try:
+            # Intentamos obtener el usuario usando el id que recibimos en el enlace
+            user = get_object_or_404(User, pk=uidb64)
 
-        if not default_token_generator.check_token(user, token):
-            return Response({"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST)
+            # Verificamos si el token es válido
+            if not default_token_generator.check_token(user, token):
+                return Response({"error": "Token inválido o expirado"}, status=status.HTTP_400_BAD_REQUEST)
 
-        new_password = request.data.get('password')
-        user.set_password(new_password)
-        user.save()
+            # Obtenemos la nueva contraseña
+            new_password = request.data.get('password')
+            if not new_password:
+                return Response({"error": "La nueva contraseña es obligatoria"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"message": "Contraseña cambiada exitosamente"}, status=status.HTTP_200_OK)
+            # Validar que la nueva contraseña sea suficientemente segura
+            if len(new_password) < 8:
+                return Response({"error": "La contraseña debe tener al menos 8 caracteres"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Si todo es correcto, actualizamos la contraseña del usuario
+            user.set_password(new_password)
+            user.save()
+
+            return Response({"message": "Contraseña cambiada exitosamente"}, status=status.HTTP_200_OK)
+
+        except ObjectDoesNotExist:
+            return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
