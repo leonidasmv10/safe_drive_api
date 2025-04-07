@@ -15,6 +15,7 @@ class TestView(APIView):
 class RegisterAPIView(APIView):
     def post(self, request):
         print("Datos recibidos:", request.data)
+        print(request.data.get('email'))
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -136,9 +137,10 @@ class PasswordResetConfirmView(APIView):
                 return Response({"error": "La contraseña debe tener al menos 8 caracteres"}, status=status.HTTP_400_BAD_REQUEST)
 
             # Si todo es correcto, actualizamos la contraseña del usuario
+            print("Antes:", user.password)
             user.set_password(new_password)
             user.save()
-
+            print("Después:", user.password)
             return Response({"message": "Contraseña cambiada exitosamente"}, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
