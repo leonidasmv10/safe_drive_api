@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "core",
     "driving",
     "detections",
+    "models_ai",
     'corsheaders',
 ]
 
