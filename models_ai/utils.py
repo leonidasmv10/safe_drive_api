@@ -1,11 +1,14 @@
 import librosa
 import librosa.display
+
+import matplotlib
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from io import BytesIO
 from PIL import Image
-import os
+
 
 def wav_a_tensor(wav_path, target_size=(128, 128)):
     """
