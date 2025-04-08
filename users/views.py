@@ -38,6 +38,7 @@ class LogoutAPIView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data["refresh"]
+            print(refresh_token)
             token = RefreshToken(refresh_token)
             token.blacklist()  # Invalida el token
             return Response({"message": "Logout exitoso"}, status=status.HTTP_205_RESET_CONTENT)

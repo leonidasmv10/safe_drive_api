@@ -171,3 +171,11 @@ EMAIL_HOST_USER = "barcelona.beisbol9@gmail.com"
 EMAIL_HOST_PASSWORD = "cmno opna otlj ktzc"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),         # Token de acceso dura 1 día
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),        # Token de refresh dura 7 días
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+}
