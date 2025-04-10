@@ -24,5 +24,6 @@ urlpatterns = [
     path("core/", include("core.urls")),
     path("detection/", include("detections.urls")),
     path('driving/', include('driving.urls')),
+    path('models_ai/', include('models_ai.urls')),
     path('admin/', admin.site.urls),
 ]

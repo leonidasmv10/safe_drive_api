@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "core",
     "driving",
     "detections",
+    "models_ai",
     'corsheaders',
 ]
 
@@ -163,3 +164,19 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "barcelona.beisbol9@gmail.com"
+EMAIL_HOST_PASSWORD = "cmno opna otlj ktzc"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),         # Token de acceso dura 1 día
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),        # Token de refresh dura 7 días
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+}
