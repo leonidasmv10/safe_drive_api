@@ -11,5 +11,5 @@ python manage.py createsuperuser
 
 # admin
 
-leonidas
-dev12345
+admin
+CodeSignal2025

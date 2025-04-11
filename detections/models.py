@@ -14,7 +14,8 @@ class Location(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     latitud = models.FloatField()
     longitud = models.FloatField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now_add=True)
+
 
 class AudioDetection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
