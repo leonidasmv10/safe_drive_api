@@ -5,6 +5,9 @@ import tensorflow as tf
 import tempfile
 import os
 from .utils import *
+from django.utils import timezone
+from detections.models import AudioDetection, SoundType, Location
+import datetime
 
 # Carga del modelo una sola vez al iniciar el servidor
 MODEL_PATH = "audio_model.h5"
@@ -12,13 +15,6 @@ model = tf.keras.models.load_model(MODEL_PATH)
 
 # Etiquetas de las clases
 LABELS = ["ambulance", "car_horn", "firetruck", "police"]
-
-import datetime
-
-
-from django.utils import timezone
-
-from detections.models import AudioDetection, SoundType, Location
 
 
 class DetectionCriticalSoundAPIView(APIView):
@@ -34,33 +30,29 @@ class DetectionCriticalSoundAPIView(APIView):
             )
 
         try:
-            # Crear archivo temporal sin borrarlo automáticamente
             temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
             for chunk in audio_file.chunks():
                 temp_audio.write(chunk)
             temp_audio.close()
 
-            # Procesar el archivo temporal
             audio_tensor = wav_a_tensor(temp_audio.name)
             prediction = model.predict(audio_tensor)
             predicted_label = LABELS[np.argmax(prediction)]
 
             location = Location.objects.create(
-                user=request.user,  # Usuario autenticado
-                latitud=request.data.get("latitud"),  # Cambiar por la latitud real
-                longitud=request.data.get("longitud"),  # Cambiar por la longitud real
+                user=request.user,
+                latitud=request.data.get("latitud"),
+                longitud=request.data.get("longitud"),
                 date=timezone.now(),
             )
 
-            # Guardar en la base de datos
             audio_detection = AudioDetection.objects.create(
-                user=request.user,  # Usuario autenticado
+                user=request.user, 
                 sound_type=SoundType.objects.get(id=np.argmax(prediction)),
                 location=Location.objects.get(id=Location.objects.latest("id").id),
                 detection_date=timezone.now(),
             )
 
-            # Eliminar archivo temporal manualmente
             os.remove(temp_audio.name)
 
             return Response(
