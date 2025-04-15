@@ -9,6 +9,7 @@ from .serializers import (
 )
 from .models import VisualDetection
 from django.utils import timezone
+from django.http import JsonResponse
 
 
 class VisualDetectionCreateView(APIView):
@@ -56,3 +57,11 @@ class LocationCreateView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class NotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+            return Response([{
+                "type": "police",
+                "direction": "left"
+            }])
