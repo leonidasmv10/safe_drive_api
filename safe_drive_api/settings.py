@@ -174,7 +174,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # Token de acceso dura 1 día
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),  # Token de acceso dura 2 horas
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Token de refresh dura 7 días
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
