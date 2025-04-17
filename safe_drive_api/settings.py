@@ -145,9 +145,8 @@ REST_FRAMEWORK = {
     # ],
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Permite el frontend en Vite
-]
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
