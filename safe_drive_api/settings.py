@@ -166,14 +166,14 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "barcelona.beisbol9@gmail.com"
-EMAIL_HOST_PASSWORD = "cmno opna otlj ktzc"
+EMAIL_HOST_USER = "recover.safedrive@gmail.com"
+EMAIL_HOST_PASSWORD = "eazc mmjd ktjn rgkd"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # Token de acceso dura 1 día
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),  # Token de acceso dura 2 horas
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Token de refresh dura 7 días
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
