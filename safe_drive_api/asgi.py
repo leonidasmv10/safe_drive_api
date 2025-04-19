@@ -1,16 +1,24 @@
-"""
-ASGI config for safe_drive_api project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
-"""
-
 import os
-
-from django.core.asgi import get_asgi_application
+import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'safe_drive_api.settings')
+django.setup()  # Configura Django antes de importar módulos que dependan de él
 
-application = get_asgi_application()
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
+
+# Importa routing DESPUÉS de configurar Django
+import models_ai.routing
+
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter(
+                models_ai.routing.websocket_urlpatterns
+            )
+        )
+    ),
+})

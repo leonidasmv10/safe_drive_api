@@ -32,6 +32,7 @@ class RegisterAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -13,3 +13,6 @@ python manage.py createsuperuser
 
 admin
 CodeSignal2025
+
+
+daphne safe_drive_api.asgi:application
