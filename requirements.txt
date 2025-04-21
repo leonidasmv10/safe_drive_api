@@ -6,6 +6,3 @@ tensorflow
 librosa
 pillow
 matplotlib
-channels
-channels_redis
-daphne

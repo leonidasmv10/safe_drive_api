@@ -11,42 +11,43 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# =============================================================================
+# Project Paths
+# =============================================================================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# =============================================================================
+# Security Settings
+# =============================================================================
 SECRET_KEY = "django-insecure-m9pk-5@z^xd%fde@qcb_e&@2*t^(_ovl&igg4i%3-4o@w6t%co"
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# ALLOWED_HOSTS = ['26.147.198.13']
 ALLOWED_HOSTS = ["*"]
 
-
-# Application definition
-
+# =============================================================================
+# Application Definition
+# =============================================================================
 INSTALLED_APPS = [
+    # Django Core Apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "channels",
+    
+    # Third Party Apps
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+    
+    # Local Apps
     "users",
     "core",
     "driving",
     "detections",
     "models_ai",
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# =============================================================================
+# URL & Template Configuration
+# =============================================================================
 ROOT_URLCONF = "safe_drive_api.urls"
 
 TEMPLATES = [
@@ -78,23 +82,14 @@ TEMPLATES = [
     },
 ]
 
+# =============================================================================
+# ASGI/WSGI Configuration
+# =============================================================================
 ASGI_APPLICATION = "safe_drive_api.asgi.application"
-WSGI_APPLICATION = "safe_drive_api.wsgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-        # Para producción, usa Redis:
-        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     'hosts': [('127.0.0.1', 6379)],
-        # },
-    },
-}
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# =============================================================================
+# Database Configuration
+# =============================================================================
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -102,10 +97,9 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
+# =============================================================================
+# Password Validation
+# =============================================================================
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -121,47 +115,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# =============================================================================
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
+# =============================================================================
 LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+TIME_ZONE = "Europe/Madrid"
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# =============================================================================
+# Static Files
+# =============================================================================
 STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-# APPEND_SLASH = False
 
-
+# =============================================================================
+# REST Framework Configuration
+# =============================================================================
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # "rest_framework.authentication.TokenAuthentication",
-        # "rest_framework.authentication.SessionAuthentication",
     ],
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.IsAuthenticated",
-    # ],
 }
 
+# =============================================================================
+# CORS Configuration
+# =============================================================================
 CORS_ALLOW_ALL_ORIGINS = True
-
-
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -174,6 +155,9 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+# =============================================================================
+# Email Configuration
+# =============================================================================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
@@ -182,14 +166,13 @@ EMAIL_HOST_USER = "recover.safedrive@gmail.com"
 EMAIL_HOST_PASSWORD = "eazc mmjd ktjn rgkd"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-from datetime import timedelta
-
+# =============================================================================
+# JWT Configuration
+# =============================================================================
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),  # Token de acceso dura 2 horas
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Token de refresh dura 7 días
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-TIME_ZONE = "Europe/Madrid"
-USE_TZ = True  # Asegura que Django maneje correctamente las zonas horarias

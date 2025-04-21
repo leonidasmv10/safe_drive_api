@@ -6,7 +6,7 @@ import tensorflow as tf
 import tempfile
 import os
 import numpy as np
-from .utils import *
+import librosa
 from django.utils import timezone
 from detections.models import AudioDetection, SoundType, Location
 
@@ -164,10 +164,8 @@ class DetectionCriticalSoundAPIView(APIView):
         # Save location data
         location_result = Location.objects.create(
             user=request.user,
-            latitud=69,
-            longitud=69,
-            # latitud=request.data.get("latitud"),
-            # longitud=request.data.get("longitud"),
+            latitud=request.data.get("latitude") or 9999,
+            longitud=request.data.get("longitude") or 9999,
             date=timezone.now(),
         )
 
