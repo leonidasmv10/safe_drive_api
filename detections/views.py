@@ -10,6 +10,34 @@ from .serializers import (
 from .models import VisualDetection
 from django.utils import timezone
 from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
+
+from .yolo_predict import predict_image
+import cv2
+
+
+@api_view(["POST"])
+def PredictFromCameraView(request):
+    # Acceder a la cámara (0 = cámara por defecto)
+    cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        return Response({"error": "No se pudo acceder a la cámara"}, status=500)
+
+    ret, frame = cap.read()
+    cap.release()
+
+    if not ret:
+        return Response({"error": "No se pudo capturar un frame"}, status=500)
+
+    # Convertir el frame capturado en bytes
+    _, img_encoded = cv2.imencode(".jpg", frame)
+    image_bytes = img_encoded.tobytes()
+
+    # Hacer predicción con YOLO
+    detections = predict_image(image_bytes)
+
+    return Response({"detections": detections})
 
 
 class VisualDetectionCreateView(APIView):
@@ -58,10 +86,9 @@ class LocationCreateView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class NotificationView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
-            return Response([{
-                "type": "police",
-                "direction": "left"
-            }])
+        return Response([{"type": "police", "direction": "left"}])

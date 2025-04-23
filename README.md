@@ -14,5 +14,7 @@ python manage.py createsuperuser
 admin
 CodeSignal2025
 
+leonidasmv
+dev12345
 
 daphne safe_drive_api.asgi:application
