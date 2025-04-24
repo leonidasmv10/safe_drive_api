@@ -126,6 +126,7 @@ REST_FRAMEWORK = {
 # =============================================================================
 CORS_ALLOWED_ORIGINS = [
     "https://safedrivev.netlify.app",
+    "http://localhost:5173",
 ]
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
