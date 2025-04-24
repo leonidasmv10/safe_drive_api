@@ -18,3 +18,8 @@ leonidasmv
 dev12345
 
 daphne safe_drive_api.asgi:application
+
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121/
+
+python models_ai/live_video_detection.py
