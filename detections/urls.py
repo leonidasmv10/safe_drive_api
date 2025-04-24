@@ -5,6 +5,7 @@ from .views import (
     LocationCreateView,
     AudioDetectionCreateView,
     NotificationView,
+    AudioDetectionListView,
 )
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
     ),
     path("api/notifications/", NotificationView.as_view()),
     path("visual/predict-camera/", PredictFromCameraView, name="predict_from_camera"),
+    path('audio_list/', AudioDetectionListView.as_view(), name='list_audio_detections'),
 ]

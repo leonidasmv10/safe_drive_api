@@ -7,11 +7,9 @@ from .serializers import (
     LocationSerializer,
     AudioDetectionSerializer,
 )
-from .models import VisualDetection
+from .models import AudioDetection
 from django.utils import timezone
-from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
-
 from .yolo_predict import predict_image
 import cv2
 
@@ -92,3 +90,10 @@ class NotificationView(APIView):
 
     def get(self, request):
         return Response([{"type": "police", "direction": "left"}])
+
+class AudioDetectionListView(APIView):
+    def get(self, request):
+        # Obtiene todas las detecciones de audio sin filtrar por usuario
+        audio_detections = AudioDetection.objects.all()
+        serializer = AudioDetectionSerializer(audio_detections, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
