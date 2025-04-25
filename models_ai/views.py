@@ -17,7 +17,7 @@ import re
 from .yolo_predict import predict_image
 
 # Load model once when the server starts
-MODEL_PATH = "critical_sound_detector_model.h5"
+MODEL_PATH = "models_ai/models/critical_sound_detector_model.h5"
 model = tf.keras.models.load_model(MODEL_PATH)
 
 # Class labels
