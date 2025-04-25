@@ -7,4 +7,7 @@ urlpatterns = [
         DetectionCriticalSoundAPIView.as_view(),
         name="detection-critical-sound",
     ),
+    path(
+        "detection-vision/", RealTimeDetectionView.as_view(), name="real_time_detection"
+    ),
 ]

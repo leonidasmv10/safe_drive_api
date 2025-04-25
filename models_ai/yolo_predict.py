@@ -2,9 +2,7 @@ from ultralytics import YOLO
 from PIL import Image
 import io
 
-# Carga el modelo entrenado una sola vez (mejor rendimiento)
-model = YOLO("runs/detect/train13/weights/best.pt")  # Ajusta la ruta si es diferente
-
+model = YOLO("models_ai/models/best.pt") 
 
 def predict_image(image_bytes):
     """

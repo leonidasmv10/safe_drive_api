@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
 from rest_framework import status
 import tensorflow_hub as hub
 import tensorflow as tf
@@ -9,6 +10,11 @@ import numpy as np
 import librosa
 from django.utils import timezone
 from detections.models import AudioDetection, SoundType, Location
+
+import base64
+import re
+
+from .yolo_predict import predict_image
 
 # Load model once when the server starts
 MODEL_PATH = "critical_sound_detector_model.h5"
@@ -178,3 +184,22 @@ class DetectionCriticalSoundAPIView(APIView):
         )
 
         return (location_result, audio_detection_result)
+
+
+class RealTimeDetectionView(APIView):
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+        image_data = request.data.get("image", "")
+
+        # Extraer la parte de base64
+        match = re.search(r"base64,(.*)", image_data)
+        if not match:
+            return Response({"error": "Imagen base64 no válida"}, status=400)
+
+        try:
+            image_bytes = base64.b64decode(match.group(1))
+            detections = predict_image(image_bytes)
+            return Response({"detections": detections, "alert": bool(detections)})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

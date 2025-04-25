@@ -1,14 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
-from core.models import  VehicleType, SoundType
+from core.models import VehicleType, SoundType
 
-STATUS_CHOICES = [('normal', 'Normal'), ('warning', 'Warning'), ('critical', 'Critical')]
+STATUS_CHOICES = [
+    ("normal", "Normal"),
+    ("warning", "Warning"),
+    ("critical", "Critical"),
+]
+
 
 class VisualDetection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vehicle_type = models.ForeignKey(VehicleType, on_delete=models.CASCADE)
     frequency = models.IntegerField()
     detection_date = models.DateTimeField(auto_now_add=True)
+
 
 class Location(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

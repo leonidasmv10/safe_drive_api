@@ -4,10 +4,7 @@ from ultralytics import YOLO
 import time
 
 # Configuración del modelo y API
-MODEL_PATH = 'runs/detect/train13/weights/best.pt'
-API_URL = 'http://127.0.0.1:8000/detection/visual/create/'  # O el endpoint que uses
-API_TOKEN = 'TU_TOKEN_AQUI'  # 👈 Pega tu token aquí
-
+MODEL_PATH = 'models_ai/models/best.pt'
 # Cargar modelo entrenado
 model = YOLO(MODEL_PATH)
 
@@ -49,33 +46,11 @@ while True:
                 alert_detected = True
                 print(f"⚠️ Alerta: {label} detectado con {conf:.2f} de confianza")
                 # Guardamos datos para enviar a la API
-                detections_data.append({
-                    "label": label,
-                    "confidence": round(conf, 2),
-                    "bbox": box.xyxy[0].tolist()
-                })
-
-    # Enviar a la API si se detectó algo y ha pasado suficiente tiempo
-    current_time = time.time()
-    if alert_detected and (current_time - last_sent_time > send_interval):
-        try:
-            response = requests.post(
-                API_URL,
-                headers={
-                    "Authorization": f"Bearer {API_TOKEN}"
-                },
-                json={
-                    "detections": detections_data,
-                    "source": "cam_live"  # Puedes agregar más campos personalizados
-                }
-            )
-            if response.status_code == 201:
-                print("✅ Alerta enviada correctamente al backend.")
-            else:
-                print(f"⚠️ Error al enviar alerta: {response.status_code} - {response.text}")
-            last_sent_time = current_time
-        except Exception as e:
-            print(f"❌ Error al conectarse al API: {e}")
+                # detections_data.append({
+                #     "label": label,
+                #     "confidence": round(conf, 2),
+                #     "bbox": box.xyxy[0].tolist()
+                # })
 
     # Salir con tecla 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
