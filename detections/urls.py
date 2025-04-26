@@ -3,8 +3,8 @@ from .views import (
     VisualDetectionCreateView,
     LocationCreateView,
     AudioDetectionCreateView,
-    NotificationView,
     AudioDetectionListView,
+    DailySummaryView,
 )
 
 urlpatterns = [
@@ -19,6 +19,6 @@ urlpatterns = [
         AudioDetectionCreateView.as_view(),
         name="create_audio_detection",
     ),
-    path("api/notifications/", NotificationView.as_view()),
     path("audio_list/", AudioDetectionListView.as_view(), name="list_audio_detections"),
+    path("daily_summary/", DailySummaryView.as_view(), name="daily_summary"),
 ]
