@@ -12,7 +12,7 @@ STATUS_CHOICES = [
 class VisualDetection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vehicle_type = models.ForeignKey(VehicleType, on_delete=models.CASCADE)
-    frequency = models.IntegerField()
+    frequency = models.IntegerField(default=0)
     detection_date = models.DateTimeField(auto_now_add=True)
 
 

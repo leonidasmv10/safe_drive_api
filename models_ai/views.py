@@ -9,7 +9,13 @@ import os
 import numpy as np
 import librosa
 from django.utils import timezone
-from detections.models import AudioDetection, SoundType, Location
+from detections.models import (
+    AudioDetection,
+    SoundType,
+    Location,
+    VisualDetection,
+    VehicleType,
+)
 
 import base64
 import re
@@ -200,6 +206,19 @@ class RealTimeDetectionView(APIView):
         try:
             image_bytes = base64.b64decode(match.group(1))
             detections = predict_image(image_bytes)
+
+            if detections:
+                label = detections[0]["label"]
+                # print("label: ", detections[0]["label"])
+                if label != "person":
+
+                    visual_detection_result = VisualDetection.objects.create(
+                        user=request.user,
+                        vehicle_type=VehicleType.objects.get(type_name=label),
+                        frequency=0,
+                        detection_date=timezone.now(),
+                    )
+
             return Response({"detections": detections, "alert": bool(detections)})
         except Exception as e:
             return Response({"error": str(e)}, status=500)
